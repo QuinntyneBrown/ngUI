@@ -4,5 +4,6 @@
 
         element: Element;
 
+        triggerScope: ng.IScope;
     }
 } 

@@ -1,39 +1,16 @@
 module app.book {
 
     angular.module("app.book", [
+            "app.ui",
             "ngRoute"
         ])
-        .config(["$routeProvider", config])
-        .run([run]);
-
+        .config(["$routeProvider", config]);
+    
     function config($routeProvider) {
-
-        $routeProvider.when("/book",
-            {
-                templateUrl: "app/book/templates/index.html",
-                resolve: {
-                    routeData: []
-                },
-                authorizationRequired: false,
-                caseInsensitiveMatch: true
-
-            });
 
         //$routeProvider.otherwise("/");
     }
 
-    function run() {
-        
-    }
 
-	export class BookController {
-
-        constructor() {
-
-        }
-
-    }
-
-	angular.module("app.book").controller("bookController", [BookController]);
 
 } 

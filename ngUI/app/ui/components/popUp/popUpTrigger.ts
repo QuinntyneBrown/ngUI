@@ -26,7 +26,8 @@ module app.ui {
                     element: element[0],
                     directionPriorityList: scope.directionPriorityList,
                     visibilityTimeInMs: scope.visibilityTimeInMs,
-                    viewBag:scope.viewBag
+                    viewBag: scope.viewBag,
+                    triggerScope: scope
                 });
             });
 

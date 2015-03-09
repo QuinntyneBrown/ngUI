@@ -2,6 +2,20 @@ var app;
 (function (app) {
     var book;
     (function (book) {
+        angular.module("app.book", [
+            "app.ui",
+            "ngRoute"
+        ]).config(["$routeProvider", config]);
+        function config($routeProvider) {
+            //$routeProvider.otherwise("/");
+        }
+    })(book = app.book || (app.book = {}));
+})(app || (app = {}));
+//# sourceMappingURL=module.js.map
+var app;
+(function (app) {
+    var book;
+    (function (book) {
         var BookPopUpController = (function () {
             function BookPopUpController(popUpService) {
                 this.popUpService = popUpService;
@@ -48,7 +62,8 @@ var app;
                             element: element[0],
                             directionPriorityList: scope.directionPriorityList,
                             visibilityTimeInMs: scope.visibilityTimeInMs,
-                            viewBag: scope.viewBag
+                            viewBag: scope.viewBag,
+                            triggerScope: scope
                         });
                     });
                 };
@@ -64,22 +79,42 @@ var app;
     var ui;
     (function (ui) {
         var PopUpService = (function () {
-            function PopUpService($http) {
+            function PopUpService($http, $compile) {
                 var _this = this;
                 this.$http = $http;
+                this.$compile = $compile;
+                this.setViewBag = function (data) {
+                    _this.viewBag = data;
+                };
+                this.getViewBag = function () {
+                    return _this.viewBag;
+                };
                 this.showPopUp = function (params) {
                     if (_this.popUpExists()) {
-                        _this.removePopUpElement();
+                        _this.destroy();
                     }
+                    _this.setViewBag(params.viewBag);
                     _this.$http({ method: "GET", url: params.templateUrl }).then(function (results) {
                         var popUpElement = _this.createPopUpElement(results.data);
-                        var dimension = _this.getDimensionOfPopUpElement(popUpElement);
-                        _this.stylePopUp(popUpElement, dimension);
-                        _this.appendPopUpElementToBody(popUpElement);
-                        setTimeout(_this.removePopUpElement, params.visibilityTimeInMs);
+                        _this.$compile(popUpElement)(params.triggerScope);
+                        setTimeout(function () {
+                            var dimension = _this.getDimensionOfPopUpElement(popUpElement);
+                            _this.stylePopUp(popUpElement, dimension);
+                            _this.appendPopUpElementToBody(popUpElement);
+                            setTimeout(_this.destroy, params.visibilityTimeInMs);
+                        }, 0);
                     });
                 };
-                this.computePosition = function (triggerElement, popUpElement) {
+                this.computePosition = function (triggerElement, popUpElement, directionPriorityList) {
+                    var popUpElementRect = _this.getDimensionOfPopUpElement(popUpElement);
+                    for (var i = 0; i++; i < directionPriorityList.length) {
+                        switch (directionPriorityList[i]) {
+                            case "top":
+                            case "left":
+                            case "bottom":
+                            case "right":
+                        }
+                    }
                 };
                 this.appendPopUpElementToBody = function (popUpElement) {
                     document.body.appendChild(popUpElement);
@@ -90,7 +125,7 @@ var app;
                     div.innerHTML = template;
                     return div;
                 };
-                this.removePopUpElement = function () {
+                this.destroy = function () {
                     var popUpElement = document.getElementById("pop-up");
                     if (popUpElement) {
                         try {
@@ -105,7 +140,7 @@ var app;
                     _this.stylePopUpAsHidden(popUpElement);
                     _this.appendPopUpElementToBody(popUpElement);
                     var boundingRect = popUpElement.getBoundingClientRect();
-                    _this.removePopUpElement();
+                    _this.destroy();
                     return boundingRect;
                 };
                 this.stylePopUp = function (popUpElement, dimensions) {
@@ -120,12 +155,26 @@ var app;
                     return document.getElementById("pop-up") != null;
                 };
                 this.getPopUpElement = function () {
-                    document.getElementById("pop-up");
+                    return document.getElementById("pop-up");
+                };
+                this.getRemainingWindowSpace = function (direction, target) {
+                    var rect = target.getBoundingClientRect();
+                    switch (direction) {
+                        case "top":
+                            return rect.top;
+                        case "bottom":
+                            return screen.availHeight - rect.bottom;
+                        case "left":
+                            return rect.left;
+                        case "right":
+                            return screen.availWidth - rect.right;
+                    }
+                    return 0;
                 };
             }
             return PopUpService;
         })();
-        angular.module("app.ui").service("popUpService", ["$http", PopUpService]);
+        angular.module("app.ui").service("popUpService", ["$http", "$compile", PopUpService]);
     })(ui = app.ui || (app.ui = {}));
 })(app || (app = {}));
 //# sourceMappingURL=popUp.service.js.map
