@@ -10,7 +10,9 @@
 
         visibilityTimeInMs: number;
 
-        viewBag:any;
+        viewBag: any;
+
+        transitionDurationInMilliseconds:string;
     }
 
 } 

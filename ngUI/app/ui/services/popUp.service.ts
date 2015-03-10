@@ -6,7 +6,11 @@
             
         }
 
-        public viewBag:any;
+        public viewBag: any;
+
+        public triggerElementRect: ClientRect;
+
+        public transitionDurationInMilliseconds: string;
 
         public setViewBag = (data) => {
             this.viewBag = data;
@@ -17,9 +21,22 @@
         }
 
         public showPopUp = (params: IShowPopUpDto) => {
-            if (this.popUpExists()) {
-                this.destroy();
-            }
+
+            var triggerElementRect = params.element.getBoundingClientRect();
+
+            if (this.triggerElementRect && this.triggerElementRect.top === triggerElementRect.top
+                && this.triggerElementRect.left === triggerElementRect.left) {
+                this.destroy(false);
+                this.triggerElementRect = null;
+                return;
+            } else {
+                this.destroy(true);
+            } 
+
+
+            this.triggerElementRect = triggerElementRect;
+
+            this.transitionDurationInMilliseconds = params.transitionDurationInMilliseconds;
 
             this.setViewBag(params.viewBag);
             
@@ -31,12 +48,14 @@
 
                 setTimeout(() => {                                        
                     this.stylePopUp(popUpElement, false);
+
                     this.positionPopUpElement(params.element, popUpElement, params.directionPriorityList);                   
+
                     this.appendPopUpElementToBody(popUpElement);
 
-                    setTimeout(() => { popUpElement.style.opacity = "100"; }, 10);
+                    setTimeout(() => { popUpElement.style.opacity = "100"; }, 100);
                    
-                    setTimeout(this.destroy, params.visibilityTimeInMs);
+                    setTimeout(()=> { this.destroy(false); }, params.visibilityTimeInMs);
 
                 }, 0);
 
@@ -155,24 +174,51 @@
         }
 
         public createPopUpElement = (template: string) => {
-            var div = document.createElement("div");
-            div.id = "pop-up";
-            var container = document.createElement("div");
-            container.setAttribute("class", "container");
-            container.innerHTML = template;
-            div.appendChild(container);
-            return div;
+            var popUpElement = document.createElement("div");
+            popUpElement.id = "pop-up";
+
+            var arrowElement = document.createElement("div");
+            popUpElement.appendChild(arrowElement);
+
+            var innerElement = document.createElement("div");
+            innerElement.setAttribute("class", "inner");
+            innerElement.innerHTML = template;
+            popUpElement.appendChild(innerElement);
+
+            return popUpElement;
         }
 
-        public destroy = () => {
-            var popUpElement = document.getElementById("pop-up");
+        public destroy = (force: boolean) => {
 
-            if (popUpElement) {
-                try {
-                    var parentNode = popUpElement.parentNode;
-                    parentNode.removeChild(popUpElement);
-                } catch (error) {
-                    
+            if (!force) {
+                var popUpElement = document.getElementById("pop-up");
+
+                setTimeout(() => { popUpElement.style.opacity = "0"; }, 0);
+
+                this.triggerElementRect = null;
+
+                setTimeout(() => {
+
+
+                    if (popUpElement) {
+                        try {
+                            var parentNode = popUpElement.parentNode;
+                            parentNode.removeChild(popUpElement);
+                        } catch (error) {
+
+                        }
+                    }
+                }, this.transitionDurationInMilliseconds);
+            } else {
+                var popUpElement = document.getElementById("pop-up");
+
+                if (popUpElement) {
+                    try {
+                        var parentNode = popUpElement.parentNode;
+                        parentNode.removeChild(popUpElement);
+                    } catch (error) {
+
+                    }
                 }
             }
         }
@@ -181,20 +227,21 @@
             this.stylePopUp(popUpElement,true);
             this.appendPopUpElementToBody(popUpElement);
             var boundingRect = popUpElement.getBoundingClientRect();
-            this.destroy();
+            this.destroy(true);
             return boundingRect;
         }
 
         public stylePopUp = (popUpElement: any, hidden: boolean) => {
             popUpElement.setAttribute("class", "pop-up");
-            popUpElement.setAttribute("style", "-webkit-transition: opacity 0.500s ease-in-out;-o-transition: opacity 0.500s ease-in-out;transition: opacity 0.500s ease-in-out;");
+            popUpElement.setAttribute("style", "-webkit-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;-o-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;transition: opacity " + this.transitionDurationInMilliseconds +"ms ease-in-out;");
             popUpElement.style.opacity = "0";
             popUpElement.style.position = "absolute";
             popUpElement.style.display = "block";
-            popUpElement.childNodes[0].setAttribute("style", "-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-radius:5px;");
-            popUpElement.childNodes[0].style.margin = "5px";
-            popUpElement.childNodes[0].style.border = "1px solid #cccccc";
-            popUpElement.childNodes[0].style.boxShadow = "0 5px 10px rgba(0, 0, 0, 0.2)";
+            var innerElement = popUpElement.querySelector(".inner");
+            innerElement.setAttribute("style", "-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-radius:5px;");
+            innerElement.style.margin = "5px";
+            innerElement.style.border = "1px solid #cccccc";
+            innerElement.style.boxShadow = "0 5px 10px rgba(0, 0, 0, 0.2)";
         }
 
         public popUpExists = () => {

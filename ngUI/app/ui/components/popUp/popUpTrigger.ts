@@ -15,7 +15,8 @@ module app.ui {
             directionPriorityList: "=",
             templateUrl:"@",
             triggerEvent: "@",
-            viewBag:"="
+            viewBag: "=",
+            transitionDurationInMilliseconds:'@'
         };
 
         public link = (scope: IPopUpTriggerScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) => {
@@ -27,6 +28,7 @@ module app.ui {
                     directionPriorityList: scope.directionPriorityList,
                     visibilityTimeInMs: scope.visibilityTimeInMs,
                     viewBag: scope.viewBag,
+                    transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
                     triggerScope: scope
                 });
             });
