@@ -8,11 +8,11 @@
 
         directionPriorityList: string[];
 
-        visibilityTimeInMs: number;
+        visibilityDurationInMilliseconds: number;
 
         viewBag: any;
 
-        transitionDurationInMilliseconds:string;
+        transitionDurationInMilliseconds:number;
     }
 
 } 

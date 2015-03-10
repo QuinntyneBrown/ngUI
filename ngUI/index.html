@@ -7,17 +7,16 @@
 <body data-ng-app="app.book">
 
     <a pop-up-trigger
-       visibility-time-in-ms="2000"
+       visibility-duration-in-milliseconds="2000"
        direction-priority-list="['right','bottom','top','left']"
        trigger-event="click"
        view-bag="{ title: 'Secrets of the JavaScript Ninja'}"
        template-url="/app/book/components/bookPopUp/bookPopUp.html"
        transition-duration-in-milliseconds="500"
-
        style="position: absolute;top:250px;left:500px;">click me</a>
 
     <a pop-up-trigger
-       visibility-time-in-ms="5000"
+       visibility-duration-in-milliseconds="5000"
        direction-priority-list="['right','bottom','top','left']"
        trigger-event="click"
        view-bag="{ title: 'Secrets of the JavaScript Ninja'}"

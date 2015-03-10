@@ -9,7 +9,7 @@ var app;
                 this.popUpService = popUpService;
                 this.restrict = "A";
                 this.scope = {
-                    visibilityTimeInMs: "=",
+                    visibilityDurationInMilliseconds: "=",
                     directionPriorityList: "=",
                     templateUrl: "@",
                     triggerEvent: "@",
@@ -22,7 +22,7 @@ var app;
                             templateUrl: scope.templateUrl,
                             element: element[0],
                             directionPriorityList: scope.directionPriorityList,
-                            visibilityTimeInMs: scope.visibilityTimeInMs,
+                            visibilityDurationInMilliseconds: scope.visibilityDurationInMilliseconds,
                             viewBag: scope.viewBag,
                             transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
                             triggerScope: scope

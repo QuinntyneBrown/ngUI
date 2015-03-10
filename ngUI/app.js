@@ -50,7 +50,7 @@ var app;
                 this.popUpService = popUpService;
                 this.restrict = "A";
                 this.scope = {
-                    visibilityTimeInMs: "=",
+                    visibilityDurationInMilliseconds: "=",
                     directionPriorityList: "=",
                     templateUrl: "@",
                     triggerEvent: "@",
@@ -63,7 +63,7 @@ var app;
                             templateUrl: scope.templateUrl,
                             element: element[0],
                             directionPriorityList: scope.directionPriorityList,
-                            visibilityTimeInMs: scope.visibilityTimeInMs,
+                            visibilityDurationInMilliseconds: scope.visibilityDurationInMilliseconds,
                             viewBag: scope.viewBag,
                             transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
                             triggerScope: scope
@@ -82,10 +82,11 @@ var app;
     var ui;
     (function (ui) {
         var PopUpService = (function () {
-            function PopUpService($http, $compile) {
+            function PopUpService($compile, $http, $timeout) {
                 var _this = this;
-                this.$http = $http;
                 this.$compile = $compile;
+                this.$http = $http;
+                this.$timeout = $timeout;
                 this.setViewBag = function (data) {
                     _this.viewBag = data;
                 };
@@ -93,6 +94,9 @@ var app;
                     return _this.viewBag;
                 };
                 this.showPopUp = function (params) {
+                    if (_this.timeout) {
+                        _this.$timeout.cancel(_this.timeout);
+                    }
                     var triggerElementRect = params.element.getBoundingClientRect();
                     if (_this.triggerElementRect && _this.triggerElementRect.top === triggerElementRect.top && _this.triggerElementRect.left === triggerElementRect.left) {
                         _this.destroy(false);
@@ -108,16 +112,16 @@ var app;
                     _this.$http({ method: "GET", url: params.templateUrl }).then(function (results) {
                         var popUpElement = _this.createPopUpElement(results.data);
                         _this.$compile(popUpElement)(params.triggerScope);
-                        setTimeout(function () {
+                        _this.$timeout(function () {
                             _this.stylePopUp(popUpElement, false);
                             _this.positionPopUpElement(params.element, popUpElement, params.directionPriorityList);
                             _this.appendPopUpElementToBody(popUpElement);
-                            setTimeout(function () {
+                            _this.$timeout(function () {
                                 popUpElement.style.opacity = "100";
                             }, 100);
-                            setTimeout(function () {
+                            _this.timeout = _this.$timeout(function () {
                                 _this.destroy(false);
-                            }, params.visibilityTimeInMs);
+                            }, params.visibilityDurationInMilliseconds);
                         }, 0);
                     });
                 };
@@ -130,14 +134,14 @@ var app;
                                 if (triggerElementRect.top > popUpElementRect.height) {
                                     if (triggerElementRect.width > popUpElementRect.width) {
                                         popUpElement.style.top = (triggerElementRect.top - popUpElementRect.height) + "px";
-                                        popUpElement.style.left = _this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                        popUpElement.style.left = _this.getMiddleOfElement(triggerElement, "horizontal") - (popUpElementRect.width / 2) + "px";
                                         return;
                                     }
                                     else {
                                         var diff = (popUpElementRect.width - triggerElementRect.width) / 2;
                                         if (((triggerElementRect.right + diff) < window.innerWidth) && triggerElementRect.left > diff) {
                                             popUpElement.style.top = (triggerElementRect.top - popUpElementRect.height) + "px";
-                                            popUpElement.style.left = _this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                            popUpElement.style.left = _this.getMiddleOfElement(triggerElement, "horizontal") - (popUpElementRect.width / 2) + "px";
                                             return;
                                         }
                                     }
@@ -147,14 +151,14 @@ var app;
                                 if (triggerElementRect.left > popUpElementRect.width) {
                                     if (triggerElementRect.height > popUpElementRect.height) {
                                         popUpElement.style.left = (triggerElementRect.left - popUpElementRect.width) + "px";
-                                        popUpElement.style.top = _this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                        popUpElement.style.top = _this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                         return;
                                     }
                                     else {
                                         var diff = (popUpElementRect.height - triggerElementRect.height) / 2;
                                         if (((triggerElementRect.bottom + diff) < window.innerHeight) && triggerElementRect.top > diff) {
                                             popUpElement.style.left = (triggerElementRect.left - popUpElementRect.width) + "px";
-                                            popUpElement.style.top = _this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                            popUpElement.style.top = _this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                             return;
                                         }
                                     }
@@ -164,14 +168,14 @@ var app;
                                 if ((window.innerHeight - triggerElementRect.bottom) > popUpElementRect.height) {
                                     if (triggerElementRect.width > popUpElementRect.width) {
                                         popUpElement.style.top = triggerElementRect.bottom + "px";
-                                        popUpElement.style.left = _this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                        popUpElement.style.left = _this.getMiddleOfElement(triggerElement, "horizontal") - (popUpElementRect.width / 2) + "px";
                                         return;
                                     }
                                     else {
                                         var diff = (popUpElementRect.width - triggerElementRect.width) / 2;
                                         if (((triggerElementRect.right + diff) < window.innerWidth) && triggerElementRect.left > diff) {
                                             popUpElement.style.top = triggerElementRect.bottom + "px";
-                                            popUpElement.style.left = _this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                            popUpElement.style.left = _this.getMiddleOfElement(triggerElement, "horizontal") - (popUpElementRect.width / 2) + "px";
                                             return;
                                         }
                                     }
@@ -181,14 +185,14 @@ var app;
                                 if ((window.innerWidth - triggerElementRect.right) > popUpElementRect.width) {
                                     if (triggerElementRect.height > popUpElementRect.height) {
                                         popUpElement.style.left = triggerElementRect.right + "px";
-                                        popUpElement.style.top = _this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                        popUpElement.style.top = _this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                         return;
                                     }
                                     else {
                                         var diff = (popUpElementRect.height - triggerElementRect.height) / 2;
                                         if (((triggerElementRect.bottom + diff) < window.innerHeight) && triggerElementRect.top > diff) {
                                             popUpElement.style.left = triggerElementRect.right + "px";
-                                            popUpElement.style.top = _this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                            popUpElement.style.top = _this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                             return;
                                         }
                                     }
@@ -215,11 +219,11 @@ var app;
                 this.destroy = function (force) {
                     if (!force) {
                         var popUpElement = document.getElementById("pop-up");
-                        setTimeout(function () {
+                        _this.$timeout(function () {
                             popUpElement.style.opacity = "0";
                         }, 0);
                         _this.triggerElementRect = null;
-                        setTimeout(function () {
+                        _this.$timeout(function () {
                             if (popUpElement) {
                                 try {
                                     var parentNode = popUpElement.parentNode;
@@ -281,18 +285,19 @@ var app;
                     }
                     return 0;
                 };
-                this.getVerticalMiddle = function (element) {
-                    var clientRect = element.getBoundingClientRect();
-                    return ((clientRect.bottom - clientRect.top) / 2) + clientRect.top;
-                };
-                this.getHorizontalMiddle = function (element) {
-                    var clientRect = element.getBoundingClientRect();
-                    return ((clientRect.right - clientRect.left) / 2) + clientRect.left;
-                };
             }
+            PopUpService.prototype.getMiddleOfElement = function (element, orientation) {
+                var clientRect = element.getBoundingClientRect();
+                if (orientation === "vertical") {
+                    return ((clientRect.bottom - clientRect.top) / 2) + clientRect.top;
+                }
+                if (orientation === "horizontal") {
+                    return ((clientRect.right - clientRect.left) / 2) + clientRect.left;
+                }
+            };
             return PopUpService;
         })();
-        angular.module("app.ui").service("popUpService", ["$http", "$compile", PopUpService]);
+        angular.module("app.ui").service("popUpService", ["$compile", "$http", "$timeout", PopUpService]);
     })(ui = app.ui || (app.ui = {}));
 })(app || (app = {}));
 //# sourceMappingURL=popUp.service.js.map

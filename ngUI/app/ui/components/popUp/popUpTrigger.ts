@@ -11,7 +11,7 @@ module app.ui {
         public restrict: string = "A";
 
         public scope = {
-            visibilityTimeInMs: "=",
+            visibilityDurationInMilliseconds: "=",
             directionPriorityList: "=",
             templateUrl:"@",
             triggerEvent: "@",
@@ -26,7 +26,7 @@ module app.ui {
                     templateUrl: scope.templateUrl,
                     element: element[0],
                     directionPriorityList: scope.directionPriorityList,
-                    visibilityTimeInMs: scope.visibilityTimeInMs,
+                    visibilityDurationInMilliseconds: scope.visibilityDurationInMilliseconds,
                     viewBag: scope.viewBag,
                     transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
                     triggerScope: scope

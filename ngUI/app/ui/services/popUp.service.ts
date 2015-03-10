@@ -2,15 +2,19 @@
     
     class PopUpService implements IPopUpService {
         
-        constructor(private $http: ng.IHttpService, private $compile: ng.ICompileService) {
-            
+        constructor(
+            private $compile: ng.ICompileService,
+            private $http: ng.IHttpService,
+            private $timeout: ng.ITimeoutService) {            
         }
 
         public viewBag: any;
 
         public triggerElementRect: ClientRect;
 
-        public transitionDurationInMilliseconds: string;
+        public timeout: ng.IPromise<any>;
+
+        public transitionDurationInMilliseconds: number;
 
         public setViewBag = (data) => {
             this.viewBag = data;
@@ -21,6 +25,10 @@
         }
 
         public showPopUp = (params: IShowPopUpDto) => {
+
+            if (this.timeout) {
+                this.$timeout.cancel(this.timeout);                
+            }
 
             var triggerElementRect = params.element.getBoundingClientRect();
 
@@ -46,16 +54,16 @@
                 
                 (<any>this.$compile)(popUpElement)(params.triggerScope);
 
-                setTimeout(() => {                                        
+                this.$timeout(() => {                                        
                     this.stylePopUp(popUpElement, false);
 
                     this.positionPopUpElement(params.element, popUpElement, params.directionPriorityList);                   
 
                     this.appendPopUpElementToBody(popUpElement);
 
-                    setTimeout(() => { popUpElement.style.opacity = "100"; }, 100);
+                    this.$timeout(() => { popUpElement.style.opacity = "100"; }, 100);
                    
-                    setTimeout(()=> { this.destroy(false); }, params.visibilityTimeInMs);
+                    this.timeout = this.$timeout(()=> { this.destroy(false); }, params.visibilityDurationInMilliseconds);
 
                 }, 0);
 
@@ -79,7 +87,7 @@
 
                             if (triggerElementRect.width > popUpElementRect.width) {
                                 popUpElement.style.top = (triggerElementRect.top - popUpElementRect.height) + "px";
-                                popUpElement.style.left = this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                popUpElement.style.left = this.getMiddleOfElement(triggerElement,"horizontal") - (popUpElementRect.width / 2) + "px";
                                 return;
 
                             } else {
@@ -87,7 +95,7 @@
 
                                 if (((triggerElementRect.right + diff) < window.innerWidth) && triggerElementRect.left > diff) {
                                     popUpElement.style.top = (triggerElementRect.top - popUpElementRect.height) + "px";
-                                    popUpElement.style.left = this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                    popUpElement.style.left = this.getMiddleOfElement(triggerElement, "horizontal") - (popUpElementRect.width / 2) + "px";
                                     return;
                                 }
                             }
@@ -102,14 +110,14 @@
 
                             if (triggerElementRect.height > popUpElementRect.height) {
                                 popUpElement.style.left = (triggerElementRect.left - popUpElementRect.width) + "px";
-                                popUpElement.style.top = this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                popUpElement.style.top = this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                 return;
                             } else {
                                 var diff = (popUpElementRect.height - triggerElementRect.height) / 2;
 
                                 if (((triggerElementRect.bottom + diff) < window.innerHeight) && triggerElementRect.top > diff) {
                                     popUpElement.style.left = (triggerElementRect.left - popUpElementRect.width) + "px";
-                                    popUpElement.style.top = this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                    popUpElement.style.top = this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                     return;
                                 }
                             }
@@ -124,7 +132,7 @@
 
                             if (triggerElementRect.width > popUpElementRect.width) {
                                 popUpElement.style.top = triggerElementRect.bottom + "px";
-                                popUpElement.style.left = this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                popUpElement.style.left = this.getMiddleOfElement(triggerElement, "horizontal") - (popUpElementRect.width / 2) + "px";
                                 return;
 
                             } else {
@@ -133,7 +141,7 @@
 
                                 if (((triggerElementRect.right + diff) < window.innerWidth) && triggerElementRect.left > diff) {
                                     popUpElement.style.top = triggerElementRect.bottom + "px";
-                                    popUpElement.style.left = this.getHorizontalMiddle(triggerElement) - (popUpElementRect.width / 2) + "px";
+                                    popUpElement.style.left = this.getMiddleOfElement(triggerElement, "horizontal") - (popUpElementRect.width / 2) + "px";
                                     return;
                                 }
                             }
@@ -148,7 +156,7 @@
 
                             if (triggerElementRect.height > popUpElementRect.height) {
                                 popUpElement.style.left = triggerElementRect.right + "px";
-                                popUpElement.style.top = this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                popUpElement.style.top = this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                 return;
                             } else {
 
@@ -156,7 +164,7 @@
 
                                 if (((triggerElementRect.bottom + diff) < window.innerHeight) && triggerElementRect.top > diff) {
                                     popUpElement.style.left = triggerElementRect.right + "px";
-                                    popUpElement.style.top = this.getVerticalMiddle(triggerElement) - (popUpElementRect.height / 2) + "px";
+                                    popUpElement.style.top = this.getMiddleOfElement(triggerElement, "vertical") - (popUpElementRect.height / 2) + "px";
                                     return;
                                 }
                             }
@@ -193,12 +201,11 @@
             if (!force) {
                 var popUpElement = document.getElementById("pop-up");
 
-                setTimeout(() => { popUpElement.style.opacity = "0"; }, 0);
+                this.$timeout(() => { popUpElement.style.opacity = "0"; }, 0);
 
                 this.triggerElementRect = null;
 
-                setTimeout(() => {
-
+                this.$timeout(() => {
 
                     if (popUpElement) {
                         try {
@@ -209,6 +216,7 @@
                         }
                     }
                 }, this.transitionDurationInMilliseconds);
+
             } else {
                 var popUpElement = document.getElementById("pop-up");
 
@@ -248,7 +256,7 @@
             return document.getElementById("pop-up") != null;
         }
 
-        public getPopUpElement = ():Element => {
+        public getPopUpElement = (): Element => {
             return document.getElementById("pop-up");
         }
 
@@ -273,16 +281,20 @@
             return 0;
         }
 
-        public getVerticalMiddle = (element: Element) => {
-            var clientRect = element.getBoundingClientRect();
-            return ((clientRect.bottom - clientRect.top) / 2) + clientRect.top;
-        }
+        public getMiddleOfElement(element: Element, orientation: string) {
 
-        public getHorizontalMiddle = (element: Element) => {
             var clientRect = element.getBoundingClientRect();
-            return ((clientRect.right - clientRect.left) / 2) + clientRect.left;
+
+            if (orientation === "vertical") {
+                return ((clientRect.bottom - clientRect.top) / 2) + clientRect.top;
+            }
+
+            if (orientation === "horizontal") {
+                return ((clientRect.right - clientRect.left) / 2) + clientRect.left;
+            }
+
         }
     }
 
-    angular.module("app.ui").service("popUpService", ["$http","$compile",PopUpService]);
+    angular.module("app.ui").service("popUpService", ["$compile","$http","$timeout",PopUpService]);
 }
