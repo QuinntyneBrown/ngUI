@@ -2,7 +2,7 @@
     
     interface IShowPopUpDto extends IPopUpTriggerScope {
 
-        element: Element;
+        element: HTMLDivElement;
 
         triggerScope: ng.IScope;
     }
