@@ -1,5 +1,0 @@
-app\book\module.js
-app\book\components\bookPopUp\bookPopUp.controller.js
-app\ui\ui.module.js
-app\ui\components\popUp\popUpTrigger.js
-app\ui\services\popUp.service.js
