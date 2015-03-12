@@ -1,6 +1,6 @@
 ﻿declare module app {
     
-    interface IShowPopUpOptions  {
+    interface IPopUpOptions  {
 
         element: HTMLElement;
 

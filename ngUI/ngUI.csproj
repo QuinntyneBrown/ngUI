@@ -119,10 +119,13 @@
     <TypeScriptCompile Include="app\shared\IPopUpScope.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUp.d.ts" />
     <TypeScriptCompile Include="app\shared\IPositionDetachedElement.d.ts" />
-    <TypeScriptCompile Include="app\shared\IShowPopUpOptions.d.ts" />
+    <TypeScriptCompile Include="app\shared\IPopUpOptions.d.ts" />
+    <TypeScriptCompile Include="app\ui\components\autoComplete\autoComplete.ts" />
     <TypeScriptCompile Include="app\ui\components\popUp\popUpTrigger.ts" />
     <TypeScriptCompile Include="app\ui\components\popUp\popUp.ts" />
+    <TypeScriptCompile Include="app\ui\functions\bind.ts" />
     <TypeScriptCompile Include="app\ui\functions\clientRectEquals.ts" />
+    <TypeScriptCompile Include="app\ui\functions\fire.ts" />
     <TypeScriptCompile Include="app\ui\functions\getBoundingRectForDetachedElement.ts" />
     <TypeScriptCompile Include="app\ui\functions\positionDetachedElement.ts" />
     <TypeScriptCompile Include="app\ui\ui.module.ts" />

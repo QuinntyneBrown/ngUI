@@ -30,7 +30,7 @@
 
         private htmlTemplate: string;
 
-        private initialize = (params: IShowPopUpOptions) => {
+        private initialize = (params: IPopUpOptions) => {
 
             this.triggerElement = params.element;
 
@@ -45,14 +45,19 @@
             this.viewBag = params.viewBag;
         }
 
-        public showPopUp = (params: IShowPopUpOptions) => {
+        public showPopUp = (params: IPopUpOptions) => {
+
+            var deferred = this.$q.defer();
 
             this.cancelScheduledDestructionOfElement();
 
             if (this.clientRectEquals(this.triggerElementRect, params.element.getBoundingClientRect())) {
                 this.destroy(false);
                 this.triggerElementRect = null;
-                return;
+
+                deferred.resolve();
+
+                return deferred.promise;
             } else {
                 this.destroy(true);
             }
@@ -72,10 +77,14 @@
 
                     this.appendPopUpElementToBody(popUpElement);
 
-                     this.hideElementAsync(popUpElement, params.visibilityDurationInMilliseconds);
+                    this.hideElementAsync(popUpElement, params.visibilityDurationInMilliseconds).then((results:any) => {
+                        deferred.resolve(results);
+                    });
 
                 }, 0);
-            });            
+            });
+
+            return deferred.promise;
         }
 
         public fetchAndSetTemplateAsync = (templateUrl: string) => {
@@ -86,12 +95,16 @@
 
         public hideElementAsync = (element: HTMLElement, visibilityDurationInMilliseconds: number) => {
             return this.$timeout(() => { element.style.opacity = "100"; }, 100).then(() => {
-                this.scheduleDestructionAsync(visibilityDurationInMilliseconds);
+                return this.scheduleDestructionAsync(visibilityDurationInMilliseconds);
             });
         }
 
-        public scheduleDestructionAsync = (visibilityDurationInMilliseconds:number) => {
+        public scheduleDestructionAsync = (visibilityDurationInMilliseconds: number) => {
+
             this.timeout = this.$timeout(() => { this.destroy(false); }, visibilityDurationInMilliseconds);
+
+            return this.timeout;
+
         }
 
         public cancelScheduledDestructionOfElement() {

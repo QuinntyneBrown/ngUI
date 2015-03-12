@@ -23,8 +23,8 @@ module app.ui {
 
             element[0].addEventListener(scope.triggerEvent,() => {
                 this.popUp.showPopUp({
-                    directionPriorityList: scope.directionPriorityList,                                        
-                    element: element[0],                    
+                    directionPriorityList: scope.directionPriorityList,
+                    element: element[0],
                     templateUrl: scope.templateUrl,
                     transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
                     triggerScope: scope,

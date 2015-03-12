@@ -4,7 +4,7 @@
 
         viewBag: any;
 
-        showPopUp: (params: IShowPopUpOptions) => void;
+        showPopUp: (params: IPopUpOptions) => ng.IPromise<any>;
 
     }
 } 
