@@ -2,41 +2,40 @@ module app.ui {
 
     "use strict";
 
-    class PopUpTrigger {
+    class PopUpTrigger implements ng.IDirective {
 
-        constructor(private popUpService) {
+        constructor(private popUp: IPopUp) {
 
         }
 
         public restrict: string = "A";
 
-        public scope = {
-            visibilityDurationInMilliseconds: "=",
+        public scope = {            
             directionPriorityList: "=",
-            templateUrl:"@",
+            templateUrl: "@",
+            transitionDurationInMilliseconds: '@',
             triggerEvent: "@",
             viewBag: "=",
-            transitionDurationInMilliseconds:'@'
+            visibilityDurationInMilliseconds: "="            
         };
 
         public link = (scope: IPopUpTriggerScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) => {
 
             element[0].addEventListener(scope.triggerEvent,() => {
-                this.popUpService.showPopUp({
+                this.popUp.showPopUp({
+                    directionPriorityList: scope.directionPriorityList,                                        
+                    element: element[0],                    
                     templateUrl: scope.templateUrl,
-                    element: element[0],
-                    directionPriorityList: scope.directionPriorityList,
+                    transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
+                    triggerScope: scope,
                     visibilityDurationInMilliseconds: scope.visibilityDurationInMilliseconds,
                     viewBag: scope.viewBag,
-                    transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
-                    triggerScope: scope
                 });
             });
-
         }
 
     }
 
-    angular.module("app.ui").directive("popUpTrigger", ["popUpService", (popUpService) => new PopUpTrigger(popUpService)]);
+    angular.module("app.ui").directive("popUpTrigger", ["popUp", (popUp) => new PopUpTrigger(popUp)]);
 
 }

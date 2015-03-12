@@ -1,4 +1,4 @@
-describe("Pop Up Tests", function() {
+﻿describe("Pop Up Tests", function() {
 
     var _popUp;
 

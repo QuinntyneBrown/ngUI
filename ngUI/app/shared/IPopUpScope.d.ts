@@ -1,6 +1,6 @@
 ﻿declare module app {
     
-    interface IPopUpTriggerScope {
+    interface IPopUpTriggerScope extends ng.IScope {
 
         templateUrl: string;
 

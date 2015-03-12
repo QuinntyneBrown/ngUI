@@ -1,0 +1,14 @@
+app\book\module.ts
+app\book\components\bookPopUp\bookPopUp.controller.ts
+app\shared\IClientRectEquals.d.ts
+app\shared\IGetBoundingRectForDetachedElement.d.ts
+app\shared\IPopUp.d.ts
+app\shared\IPopUpScope.d.ts
+app\shared\IPositionDetachedElement.d.ts
+app\shared\IShowPopUpOptions.d.ts
+app\ui\ui.module.ts
+app\ui\components\popUp\popUp.ts
+app\ui\components\popUp\popUpTrigger.ts
+app\ui\functions\clientRectEquals.ts
+app\ui\functions\getBoundingRectForDetachedElement.ts
+app\ui\functions\positionDetachedElement.ts

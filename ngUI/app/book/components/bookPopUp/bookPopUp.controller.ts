@@ -2,9 +2,9 @@
      
      class BookPopUpController {
          
-         constructor(public popUpService) {
+         constructor(public popUp: IPopUp) {
 
-             var viewBag = popUpService.getViewBag();
+             var viewBag = popUp.viewBag;
 
              this.title = viewBag.title;
          }
@@ -13,5 +13,5 @@
          
      }
 
-     angular.module("app.book").controller("bookPopUpController", ["popUpService",BookPopUpController]);
+     angular.module("app.book").controller("bookPopUpController", ["popUp",BookPopUpController]);
  }

@@ -59,8 +59,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\ui\services\popServiceSpec.js">
-      <DependentUpon>popUp.service.ts</DependentUpon>
+    <Content Include="app\ui\components\popUp\popUpSpec.js">
+      <DependentUpon>popUp.ts</DependentUpon>
     </Content>
     <Content Include="scripts\angular-animate.min.js.map" />
     <Content Include="scripts\angular-route.min.js.map" />
@@ -114,13 +114,17 @@
   <ItemGroup>
     <TypeScriptCompile Include="app\book\components\bookPopUp\bookPopUp.controller.ts" />
     <TypeScriptCompile Include="app\book\module.ts" />
-    <TypeScriptCompile Include="app\shared\IElement.d.ts" />
-    <TypeScriptCompile Include="app\shared\IPopUp.d.ts" />
+    <TypeScriptCompile Include="app\shared\IClientRectEquals.d.ts" />
+    <TypeScriptCompile Include="app\shared\IGetBoundingRectForDetachedElement.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUpScope.d.ts" />
-    <TypeScriptCompile Include="app\shared\IPopUpService.d.ts" />
-    <TypeScriptCompile Include="app\shared\IShowPopUpDto.d.ts" />
+    <TypeScriptCompile Include="app\shared\IPopUp.d.ts" />
+    <TypeScriptCompile Include="app\shared\IPositionDetachedElement.d.ts" />
+    <TypeScriptCompile Include="app\shared\IShowPopUpOptions.d.ts" />
     <TypeScriptCompile Include="app\ui\components\popUp\popUpTrigger.ts" />
-    <TypeScriptCompile Include="app\ui\services\popUp.service.ts" />
+    <TypeScriptCompile Include="app\ui\components\popUp\popUp.ts" />
+    <TypeScriptCompile Include="app\ui\functions\clientRectEquals.ts" />
+    <TypeScriptCompile Include="app\ui\functions\getBoundingRectForDetachedElement.ts" />
+    <TypeScriptCompile Include="app\ui\functions\positionDetachedElement.ts" />
     <TypeScriptCompile Include="app\ui\ui.module.ts" />
     <TypeScriptCompile Include="scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angularjs\angular-cookies.d.ts" />
@@ -134,6 +138,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="app\ui\components\carousel\" />
+    <Folder Include="app\ui\components\gallery\" />
+    <Folder Include="app\ui\components\list\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
