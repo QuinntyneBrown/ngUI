@@ -14,110 +14,90 @@
 
         public viewBag: any;
 
-        private triggerElementRect: ClientRect;
-
-        private timeout: ng.IPromise<any>;
-
-        private transitionDurationInMilliseconds: number;
-
-        private visibilityDurationInMilliseconds: number;
-
-        private triggerElement: HTMLElement;
-
-        private popUpElement: HTMLElement;
-
-        private triggerScope: IPopUpTriggerScope;
-
-        private htmlTemplate: string;
-
-        private initialize = (params: IPopUpOptions) => {
-
-            this.triggerElement = params.element;
-
-            this.triggerScope = params.triggerScope;
-
-            this.visibilityDurationInMilliseconds = params.visibilityDurationInMilliseconds;
-
-            this.triggerElementRect = params.element.getBoundingClientRect();
-
-            this.transitionDurationInMilliseconds = params.transitionDurationInMilliseconds;
-
-            this.viewBag = params.viewBag;
-        }
-
-        public showPopUp = (params: IPopUpOptions) => {
+        public showPopUp = (popUpOptions: IPopUpOptions) => {
 
             var deferred = this.$q.defer();
 
-            this.cancelScheduledDestructionOfElement();
-
-            if (this.clientRectEquals(this.triggerElementRect, params.element.getBoundingClientRect())) {
-                this.destroy(false);
+            this.$timeout.cancel(this.timeoutPromise);
+            if (this.clientRectEquals(this.triggerElementRect, popUpOptions.element.getBoundingClientRect())) {
                 this.triggerElementRect = null;
-
-                deferred.resolve();
+                this.hideAsync().then(() => {
+                    this.destroy(true);
+                    deferred.resolve();
+                    
+                });
 
                 return deferred.promise;
+                
             } else {
                 this.destroy(true);
             }
-
-            this.initialize(params);
-            
-            this.fetchAndSetTemplateAsync(params.templateUrl).then(() => {
-
+            this.initialize(popUpOptions);            
+            this.fetchAndSetTemplateAsync(popUpOptions.templateUrl).then(() => {
                 var popUpElement = this.createPopUpElement(this.htmlTemplate);
-
-                (<any>this.$compile)(popUpElement)(params.triggerScope);
+                (<any>this.$compile)(popUpElement)(popUpOptions.triggerScope);
 
                 this.$timeout(() => {
-                    this.stylePopUp(popUpElement);
-                    
-                    this.positionDetachedElement(params.element, popUpElement, params.directionPriorityList, this.getBoundingRectForDetachedElement(popUpElement));
+                    this.stylePopUp(popUpElement);                    
+                    this.positionDetachedElement(popUpOptions.element, popUpElement, popUpOptions.directionPriorityList, this.getBoundingRectForDetachedElement(popUpElement));
+                    document.body.appendChild(popUpElement);
+                    this.$timeout(() => {
+                        popUpElement.style.opacity = "100";
 
-                    this.appendPopUpElementToBody(popUpElement);
+                        this.hideElementAsync(popUpElement, popUpOptions.visibilityDurationInMilliseconds).then((results: any) => {
 
-                    this.hideElementAsync(popUpElement, params.visibilityDurationInMilliseconds).then((results:any) => {
-                        deferred.resolve(results);
-                    });
+                        }).then(() => {
+                            deferred.resolve();
+                        });
+
+                    }, 100);
+                    // hide elemenet after visibility duration
+                    // resolve promise
 
                 }, 0);
             });
-
             return deferred.promise;
         }
 
-        public fetchAndSetTemplateAsync = (templateUrl: string) => {
+        private initialize = (popUpOptions: IPopUpOptions) => {
+            this.triggerElement = popUpOptions.element;
+            this.triggerScope = popUpOptions.triggerScope;
+            this.visibilityDurationInMilliseconds = popUpOptions.visibilityDurationInMilliseconds;
+            this.triggerElementRect = popUpOptions.element.getBoundingClientRect();
+            this.transitionDurationInMilliseconds = popUpOptions.transitionDurationInMilliseconds;
+            this.viewBag = popUpOptions.viewBag;
+        }
+
+        private fetchAndSetTemplateAsync = (templateUrl: string) => {
             return this.$http({ method: "GET", url: templateUrl }).then((results:any) => {
                 this.htmlTemplate = results.data;
             });
         }
 
-        public hideElementAsync = (element: HTMLElement, visibilityDurationInMilliseconds: number) => {
-            return this.$timeout(() => { element.style.opacity = "100"; }, 100).then(() => {
-                return this.scheduleDestructionAsync(visibilityDurationInMilliseconds);
-            });
+        private hideElementAsync = (element: HTMLElement, visibilityDurationInMilliseconds: number) => {
+
+            var deferred = this.$q.defer();
+
+            this.timeoutPromise = this.$timeout(() => {
+                this.destroy(false).then(() => {
+                    deferred.resolve();
+                });
+            }, visibilityDurationInMilliseconds);
+
+            return deferred.promise;
         }
 
-        public scheduleDestructionAsync = (visibilityDurationInMilliseconds: number) => {
+        private processResponse(results) {
+            var deferred = this.$q.defer();
 
-            this.timeout = this.$timeout(() => { this.destroy(false); }, visibilityDurationInMilliseconds);
+            this.createPopUpElement(results.data);
 
-            return this.timeout;
+            (<any>this.$compile)(this.popUpElement)(this.triggerScope);
 
+            deferred.resolve();
+            return deferred.promise;
         }
-
-        public cancelScheduledDestructionOfElement() {
-            if (this.timeout) {
-                this.$timeout.cancel(this.timeout);
-            }
-        }
-
-        public appendPopUpElementToBody = (popUpElement: HTMLElement) => {
-            document.body.appendChild(popUpElement);
-        }
-
-        public createPopUpElement = (template: string) => {
+        private createPopUpElement = (template: string) => {
             var popUpElement = document.createElement("div");
             popUpElement.id = "pop-up";
 
@@ -132,42 +112,83 @@
             return popUpElement;
         }
 
-        public destroy = (force: boolean) => {
+        private destroy = (force: boolean) => {
+
+            var deferred = this.$q.defer();
+
+            var popUpElement = document.getElementById("pop-up");
 
             if (!force) {
-                var popUpElement = document.getElementById("pop-up");
+                this.$timeout(() => { popUpElement.style.opacity = "0"; }, 0)
+                    .then(() => {
 
-                this.$timeout(() => { popUpElement.style.opacity = "0"; }, 0);
+                    this.triggerElementRect = null;
 
-                this.triggerElementRect = null;
+                    this.$timeout(() => {
 
-                this.$timeout(() => {
-
-                    if (popUpElement) {
-                        try {
-                            var parentNode = popUpElement.parentNode;
-                            parentNode.removeChild(popUpElement);
-                        } catch (error) {
-
+                        if (popUpElement) {
+                            try {
+                                popUpElement.parentNode.removeChild(popUpElement);
+                                
+                            } catch (error) {
+                                console.log("error - 1");
+                            }
                         }
-                    }
-                }, this.transitionDurationInMilliseconds);
+                    }, this.transitionDurationInMilliseconds).then(() => {
+                        deferred.resolve();
+                    });
+                });
+                
+                return deferred.promise;
 
             } else {
-                var popUpElement = document.getElementById("pop-up");
+                
 
                 if (popUpElement) {
                     try {
-                        var parentNode = popUpElement.parentNode;
-                        parentNode.removeChild(popUpElement);
+                        popUpElement.parentNode.removeChild(popUpElement);
                     } catch (error) {
-
+                        console.log("error");
                     }
                 }
             }
         }
 
-        public stylePopUp = (popUpElement: HTMLElement) => {
+        private setOpacityToZeroAsync = () => {
+            var deferred = this.$q.defer();
+
+            this.$timeout(() => {
+                this.popUpElement.style.opacity = "0";
+                deferred.resolve();
+            }, 0);
+
+            return deferred.promise;
+        }
+
+        private waitForTransitionAsync = () => {
+            var deferred = this.$q.defer();
+
+            this.$timeout(() => {
+                deferred.resolve();
+            }, this.transitionDurationInMilliseconds);
+
+            return deferred.promise;
+        }
+
+        private hideAsync = () => {
+
+            var deferred = this.$q.defer();
+
+            this.setOpacityToZeroAsync()
+                .then(this.waitForTransitionAsync)
+                .then(() => {
+                deferred.resolve();
+            });
+
+
+            return deferred.promise;
+        }
+        private stylePopUp = (popUpElement: HTMLElement) => {
             popUpElement.setAttribute("class", "pop-up");
             popUpElement.setAttribute("style", "-webkit-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;-o-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;transition: opacity " + this.transitionDurationInMilliseconds +"ms ease-in-out;");
             popUpElement.style.opacity = "0";
@@ -180,9 +201,21 @@
             innerElement.style.boxShadow = "0 5px 10px rgba(0, 0, 0, 0.2)";
         }
 
-        public getPopUpElement = (): HTMLElement => {
-            return document.getElementById("pop-up");
-        }
+        private triggerElementRect: ClientRect;
+
+        private timeoutPromise: ng.IPromise<any>;
+
+        private transitionDurationInMilliseconds: number;
+
+        private visibilityDurationInMilliseconds: number;
+
+        private triggerElement: HTMLElement;
+
+        private popUpElement: HTMLElement;
+
+        private triggerScope: IPopUpTriggerScope;
+
+        private htmlTemplate: string;
     }
 
     angular.module("app.ui").service("popUp", [
