@@ -19,6 +19,7 @@
             var deferred = this.$q.defer();
 
             this.$timeout.cancel(this.timeoutPromise);
+
             if (this.clientRectEquals(this.triggerElementRect, popUpOptions.element.getBoundingClientRect())) {
                 this.triggerElementRect = null;
                 this.hideAsync().then(() => {
@@ -32,27 +33,27 @@
             } else {
                 this.destroy(true);
             }
-            this.initialize(popUpOptions);            
+            this.initialize(popUpOptions);  
+                      
             this.fetchAndSetTemplateAsync(popUpOptions.templateUrl).then(() => {
-                var popUpElement = this.createPopUpElement(this.htmlTemplate);
-                (<any>this.$compile)(popUpElement)(popUpOptions.triggerScope);
+                this.popUpElement = this.createPopUpElement(this.htmlTemplate);
+
+                (<any>this.$compile)(this.popUpElement)(popUpOptions.triggerScope);
 
                 this.$timeout(() => {
-                    this.stylePopUp(popUpElement);                    
-                    this.positionDetachedElement(popUpOptions.element, popUpElement, popUpOptions.directionPriorityList, this.getBoundingRectForDetachedElement(popUpElement));
-                    document.body.appendChild(popUpElement);
+                    this.stylePopUp(this.popUpElement);                    
+                    this.positionDetachedElement(popUpOptions.element, this.popUpElement, popUpOptions.directionPriorityList, this.getBoundingRectForDetachedElement(this.popUpElement));
+                    document.body.appendChild(this.popUpElement);
                     this.$timeout(() => {
-                        popUpElement.style.opacity = "100";
+                        this.popUpElement.style.opacity = "100";
 
-                        this.hideElementAsync(popUpElement, popUpOptions.visibilityDurationInMilliseconds).then((results: any) => {
+                        this.hideElementAsync(this.popUpElement, popUpOptions.visibilityDurationInMilliseconds).then((results: any) => {
 
                         }).then(() => {
                             deferred.resolve();
                         });
 
                     }, 100);
-                    // hide elemenet after visibility duration
-                    // resolve promise
 
                 }, 0);
             });
@@ -123,16 +124,9 @@
                     .then(() => {
 
                     this.triggerElementRect = null;
-
                     this.$timeout(() => {
-
-                        if (popUpElement) {
-                            try {
-                                popUpElement.parentNode.removeChild(popUpElement);
-                                
-                            } catch (error) {
-                                console.log("error - 1");
-                            }
+                        if (popUpElement && popUpElement.parentNode) {
+                            popUpElement.parentNode.removeChild(popUpElement);
                         }
                     }, this.transitionDurationInMilliseconds).then(() => {
                         deferred.resolve();
@@ -216,6 +210,7 @@
         private triggerScope: IPopUpTriggerScope;
 
         private htmlTemplate: string;
+
     }
 
     angular.module("app.ui").service("popUp", [

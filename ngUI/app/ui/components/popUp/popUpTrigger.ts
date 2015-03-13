@@ -24,22 +24,13 @@ module app.ui {
             element[0].addEventListener(scope.triggerEvent,() => {
                 this.popUp.showPopUp({
                     directionPriorityList: scope.directionPriorityList,
-                    element: document.getElementById("step-1"),
+                    element: element[0],
                     templateUrl: scope.templateUrl,
                     transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
                     triggerScope: scope,
                     visibilityDurationInMilliseconds: scope.visibilityDurationInMilliseconds,
                     viewBag: scope.viewBag,
-                }).then(() => {
-                    this.popUp.showPopUp({
-                        directionPriorityList: scope.directionPriorityList,
-                        element: document.getElementById("step-2"),
-                        templateUrl: scope.templateUrl,
-                        transitionDurationInMilliseconds: scope.transitionDurationInMilliseconds,
-                        triggerScope: scope,
-                        visibilityDurationInMilliseconds: scope.visibilityDurationInMilliseconds,
-                        viewBag: scope.viewBag,
-                    });
+
                 });
             });
         }
