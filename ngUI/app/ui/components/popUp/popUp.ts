@@ -42,7 +42,7 @@
 
                 this.$timeout(() => {
                     this.stylePopUp(this.popUpElement);                    
-                    this.positionDetachedElement(popUpOptions.element, this.popUpElement, popUpOptions.directionPriorityList, this.getBoundingRectForDetachedElement(this.popUpElement));
+                    this.positionDetachedElement(popUpOptions.element, this.popUpElement, popUpOptions.directionPriorityList, this.getBoundingRectForDetachedElement(this.popUpElement),this.alignment);
                     document.body.appendChild(this.popUpElement);
                     this.$timeout(() => {
                         this.popUpElement.style.opacity = "100";
@@ -60,7 +60,30 @@
             return deferred.promise;
         }
 
+        public dismiss = () => {
+
+            var deferred = this.$q.defer();
+
+            this.$timeout.cancel(this.timeoutPromise);
+
+            var popUpElement = document.querySelector("#pop-up");
+
+            if (popUpElement) {
+                this.triggerElementRect = null;
+                this.hideAsync().then(() => {
+                    this.destroy(true);
+                    deferred.resolve();
+
+                });
+            } else {
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+        }
         private initialize = (popUpOptions: IPopUpOptions) => {
+            this.alignment = popUpOptions.alignment || "center";
+            this.margin = popUpOptions.margin || "5px";
             this.triggerElement = popUpOptions.element;
             this.triggerScope = popUpOptions.triggerScope;
             this.visibilityDurationInMilliseconds = popUpOptions.visibilityDurationInMilliseconds;
@@ -186,11 +209,13 @@
             popUpElement.setAttribute("class", "pop-up");
             popUpElement.setAttribute("style", "-webkit-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;-o-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;transition: opacity " + this.transitionDurationInMilliseconds +"ms ease-in-out;");
             popUpElement.style.opacity = "0";
+            popUpElement.style.backgroundColor = "white";
             popUpElement.style.position = "absolute";
             popUpElement.style.display = "block";
             var innerElement: HTMLElement = <HTMLElement>popUpElement.querySelector(".inner");
             innerElement.setAttribute("style", "-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-radius:5px;");
-            innerElement.style.margin = "5px";
+            innerElement.style.backgroundColor = "white";
+            innerElement.style.margin = this.margin;
             innerElement.style.border = "1px solid #cccccc";
             innerElement.style.boxShadow = "0 5px 10px rgba(0, 0, 0, 0.2)";
         }
@@ -210,6 +235,10 @@
         private triggerScope: IPopUpTriggerScope;
 
         private htmlTemplate: string;
+
+        private alignment: string;
+
+        private margin: string;
 
     }
 

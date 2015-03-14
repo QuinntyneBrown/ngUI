@@ -7,8 +7,9 @@ module app.book {
         .config(["$routeProvider", config]);
     
     function config($routeProvider) {
+        
+        Routes.configure($routeProvider);
 
-        //$routeProvider.otherwise("/");
     }
 
 

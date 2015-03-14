@@ -2,7 +2,11 @@
     
     interface IPositionDetachedElement {
 
-        (triggerElement: HTMLElement, element: HTMLElement, directionPriorityList: string[], elementRect: ClientRect): void;
+        (triggerElement: HTMLElement,
+        element: HTMLElement,
+        directionPriorityList: string[],
+        elementRect: ClientRect,
+        alignment: string): void;
 
     }
 }

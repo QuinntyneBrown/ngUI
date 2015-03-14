@@ -59,15 +59,28 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\book\templates\index.html" />
+    <Content Include="app\book\templates\list.html" />
+    <Content Include="app\ui\components\carousel\carousel.html" />
+    <Content Include="app\ui\components\carousel\carouselItem.html" />
+    <Content Include="app\ui\components\container\container.html" />
+    <Content Include="app\ui\components\flyOut\flyOut.html" />
+    <Content Include="app\ui\components\identityHeader\identityHeader.html" />
+    <Content Include="app\ui\components\modal\modal.html" />
     <Content Include="app\ui\components\popUp\popUpSpec.js">
       <DependentUpon>popUp.ts</DependentUpon>
     </Content>
+    <Content Include="app\ui\components\slide\slide.html" />
     <Content Include="scripts\angular-animate.min.js.map" />
     <Content Include="scripts\angular-route.min.js.map" />
     <Content Include="scripts\angular-sanitize.min.js.map" />
     <Content Include="scripts\angular.min.js.map" />
     <Content Include="scripts\jquery-1.9.0.min.map" />
     <Content Include="packages.config" />
+    <Content Include="app\ui\components\identityHeader\identityHeader.less" />
+    <Content Include="app\ui\components\container\container.less" />
+    <Content Include="app\ui\components\flyOut\flyOut.less" />
+    <Content Include="app\ui\components\modal\modal.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -113,16 +126,32 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\book\components\bookPopUp\bookPopUp.controller.ts" />
-    <TypeScriptCompile Include="app\book\module.ts" />
+    <TypeScriptCompile Include="app\book\book.module.ts" />
+    <TypeScriptCompile Include="app\book\book.routes.ts" />
     <TypeScriptCompile Include="app\shared\IClientRectEquals.d.ts" />
     <TypeScriptCompile Include="app\shared\IGetBoundingRectForDetachedElement.d.ts" />
+    <TypeScriptCompile Include="app\shared\INavigationLink.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUpScope.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUp.d.ts" />
+    <TypeScriptCompile Include="app\shared\IPopUpTrigger.d.ts" />
     <TypeScriptCompile Include="app\shared\IPositionDetachedElement.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUpOptions.d.ts" />
     <TypeScriptCompile Include="app\ui\components\autoComplete\autoComplete.ts" />
+    <TypeScriptCompile Include="app\ui\components\carousel\carousel.ts" />
+    <TypeScriptCompile Include="app\ui\components\carousel\carouselItem.ts" />
+    <TypeScriptCompile Include="app\ui\components\container\container.ts" />
+    <TypeScriptCompile Include="app\ui\components\entityAdminMenu\entityAdminMenu.ts" />
+    <TypeScriptCompile Include="app\ui\components\flyOut\flyOut.ts" />
+    <TypeScriptCompile Include="app\ui\components\gallery\gallery.ts" />
+    <TypeScriptCompile Include="app\ui\components\gallery\galleryItem.ts" />
+    <TypeScriptCompile Include="app\ui\components\identityHeader\identityHeader.ts" />
+    <TypeScriptCompile Include="app\ui\components\list\list.ts" />
+    <TypeScriptCompile Include="app\ui\components\list\listItem.ts" />
+    <TypeScriptCompile Include="app\ui\components\menuHighlighter\menuHighlighter.ts" />
+    <TypeScriptCompile Include="app\ui\components\modal\modal.ts" />
     <TypeScriptCompile Include="app\ui\components\popUp\popUpTrigger.ts" />
     <TypeScriptCompile Include="app\ui\components\popUp\popUp.ts" />
+    <TypeScriptCompile Include="app\ui\components\slide\slide.ts" />
     <TypeScriptCompile Include="app\ui\functions\bind.ts" />
     <TypeScriptCompile Include="app\ui\functions\clientRectEquals.ts" />
     <TypeScriptCompile Include="app\ui\functions\fire.ts" />
@@ -143,9 +172,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="app\ui\components\carousel\" />
-    <Folder Include="app\ui\components\gallery\" />
-    <Folder Include="app\ui\components\list\" />
+    <Folder Include="app\ui\components\search\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

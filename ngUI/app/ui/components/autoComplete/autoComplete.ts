@@ -16,11 +16,12 @@ module app.ui {
 
         public templateUrl: string = "/app/ui/components/autoComplete/autoComplete.html";
 
-        public link = (scope, element, attributes) => {
+        public link = (scope: IPopUpTriggerScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) => {
 
-            element[0]
+            this.element = element[0];
         }
 
+        public element:HTMLElement;
     }
 
     angular.module("app.ui").directive("autoComplete",[() => new AutoComplete()]);

@@ -12,7 +12,13 @@
 
         viewBag: any;
 
-        transitionDurationInMilliseconds:number;
+        transitionDurationInMilliseconds: number;
+
+        popUpTrigger: any;
+
+        alignment: string;
+
+        margin: string;
     }
 
 } 

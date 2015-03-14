@@ -6,5 +6,6 @@
 
         showPopUp: (params: IPopUpOptions) => any;
 
+        dismiss:() => ng.IPromise<any>;
     }
 } 

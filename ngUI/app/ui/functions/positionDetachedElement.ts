@@ -1,18 +1,22 @@
 ﻿module app.ui {
 
-    angular.module("app.ui").value("positionDetachedElement",(triggerElement: HTMLElement, element: HTMLElement, directionPriorityList: string[], elementRect: ClientRect) => {
+    angular.module("app.ui").value("positionDetachedElement",(triggerElement: HTMLElement, element: HTMLElement, directionPriorityList: string[], elementRect: ClientRect, alignment: string): IPositionDetachedElement => {
 
         var triggerElementRect: ClientRect = triggerElement.getBoundingClientRect();
 
-        var triggerElementVerticalMiddle = ((triggerElementRect.bottom - triggerElementRect.top) / 2) + triggerElementRect.top;
+        
 
-        var triggerElementHorizontalMiddle = ((triggerElementRect.right - triggerElementRect.left) / 2) + triggerElementRect.left;
+        if (alignment === "center") {
 
-        for (var i = 0; i < directionPriorityList.length; i++) {
+            var triggerElementVerticalMiddle = ((triggerElementRect.bottom - triggerElementRect.top) / 2) + triggerElementRect.top;
 
-            var lastOption:boolean = directionPriorityList.length == i + 1;
+            var triggerElementHorizontalMiddle = ((triggerElementRect.right - triggerElementRect.left) / 2) + triggerElementRect.left;            
 
-            switch (directionPriorityList[i]) {
+            for (var i = 0; i < directionPriorityList.length; i++) {
+
+                var lastOption: boolean = directionPriorityList.length == i + 1;
+
+                switch (directionPriorityList[i]) {
 
                 case "top":
 
@@ -104,9 +108,38 @@
                     }
 
                     break;
+                }
+            }
+
+            throw new Error("Unable to position place pop up.");
+        }
+        
+        if (alignment === "left") {
+            element.style.left = triggerElementRect.left + "px";
+
+            for (var i = 0; i < directionPriorityList.length; i++) {
+
+                var lastOption: boolean = directionPriorityList.length == i + 1;
+
+                if (directionPriorityList[i] === "top") {
+                    if (triggerElementRect.top >= elementRect.height || lastOption)  {
+
+                        element.style.bottom = triggerElementRect.top + "px";
+
+                        return;
+                    }
+                }
+
+                if (directionPriorityList[i] === "bottom") {
+                    if (window.innerHeight - triggerElementRect.bottom >= elementRect.height || lastOption) {
+
+                        element.style.top = triggerElementRect.bottom + "px";
+
+                        return;
+                    }
+                }
+
             }
         }
-
-        throw new Error("Unable to position place pop up.");
     });
 } 

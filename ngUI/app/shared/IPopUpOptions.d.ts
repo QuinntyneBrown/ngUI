@@ -2,6 +2,8 @@
     
     interface IPopUpOptions  {
 
+        alignment: string;
+
         element: HTMLElement;
 
         triggerScope: IPopUpTriggerScope;
@@ -15,5 +17,7 @@
         viewBag: any;
 
         transitionDurationInMilliseconds: number;
+
+        margin: string;
     }
 } 

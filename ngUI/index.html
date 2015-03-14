@@ -5,26 +5,14 @@
     </head>
 
 <body data-ng-app="app.book">
-
-    <a pop-up-trigger id="step-1"
-       visibility-duration-in-milliseconds="1000"
-       direction-priority-list="['right']"
-       trigger-event="click"
-       view-bag="{ title: 'Rob Clicked'}"
-       template-url="/app/book/components/bookPopUp/bookPopUp.html"
-       transition-duration-in-milliseconds="500"
-       style="position: absolute;top:250px;left:500px;">click me</a>
     
+    <container navigation-links="[
+               {displayName: 'home',href:'/'},
+               {displayName: 'list', href:'#/list'}]"
+        
+                logo-url=""
+               ></container>
     
-    <a pop-up-trigger id="step-2"
-       visibility-duration-in-milliseconds="5000"
-       direction-priority-list="['top','left','right','bottom']"
-       trigger-event="click"
-       view-bag="{ title: 'Clicked'}"
-       template-url="/app/book/components/bookPopUp/bookPopUp.html"
-       transition-duration-in-milliseconds="500"
-       style="position: absolute;top:0px;left:500px;">click me</a>
-
     <script src="scripts/angular.js"></script>
     <script src="scripts/angular-route.js"></script>
     <script src="scripts/angular-animate.js"></script>

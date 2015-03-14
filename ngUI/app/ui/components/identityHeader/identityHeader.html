@@ -1,0 +1,21 @@
+<div id="identity-header">
+    
+    <div class="logo">
+        <img ng-src="identityHeader.logoUrl" />
+    </div>
+    
+    <div>
+        <a>
+            {{ identityHeader.getUsername() }}
+        </a>
+    </div>
+    <div>
+        <ul>
+            <li data-ng-repeat="navigationLink in identityHeader.navigationLinks" data-ng-if="navigationLink.authenticationRequired && identityHeader.isAuthenticated || !navigationLink.authenticationRequired">
+                <a data-ng-href="{{navigationLink.href}}"> {{ navigationLink.displayName }}</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
