@@ -19,6 +19,8 @@
         alignment: string;
 
         margin: string;
+
+        displayArrow: boolean;
     }
 
 } 

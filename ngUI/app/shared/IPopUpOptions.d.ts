@@ -4,20 +4,22 @@
 
         alignment: string;
 
+        directionPriorityList: string[];
+
+        displayArrow: boolean;
+
         element: HTMLElement;
 
-        triggerScope: IPopUpTriggerScope;
+        margin: string;
 
         templateUrl: string;
 
-        directionPriorityList: string[];
-
-        visibilityDurationInMilliseconds: number;
-
-        viewBag: any;
+        triggerScope: IPopUpTriggerScope;
 
         transitionDurationInMilliseconds: number;
 
-        margin: string;
+        viewBag: any;
+
+        visibilityDurationInMilliseconds: number;  
     }
 } 

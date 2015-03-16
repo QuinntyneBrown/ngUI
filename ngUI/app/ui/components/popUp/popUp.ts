@@ -9,6 +9,7 @@
             private $timeout: ng.ITimeoutService,
             private clientRectEquals: IClientRectEquals,
             private getBoundingRectForDetachedElement: IGetBoundingRectForDetachedElement,
+            private getSurroundingWindowSpace: IGetSurroundingWindowSpace,
             private positionDetachedElement: IPositionDetachedElement) {            
         }
 
@@ -41,9 +42,65 @@
                 (<any>this.$compile)(this.popUpElement)(popUpOptions.triggerScope);
 
                 this.$timeout(() => {
-                    this.stylePopUp(this.popUpElement);                    
-                    this.positionDetachedElement(popUpOptions.element, this.popUpElement, popUpOptions.directionPriorityList, this.getBoundingRectForDetachedElement(this.popUpElement),this.alignment);
+                    this.stylePopUp(this.popUpElement, this.displayArrow);                    
+
+                    var responseDto: IPositionDetachedElementResponseDto = this.positionDetachedElement(popUpOptions.element, this.popUpElement, popUpOptions.directionPriorityList, this.getBoundingRectForDetachedElement(this.popUpElement), this.alignment, this.getSurroundingWindowSpace(popUpOptions.element,window));
+
+                    var arrowElement: HTMLElement = <HTMLElement>this.popUpElement.querySelector(".arrow");
+
+                    
+                    switch (responseDto.position) {
+                        case "top":
+                            arrowElement.style.width = "0px";
+                            arrowElement.style.height = "0px";
+                            arrowElement.style.borderLeft = "5px solid transparent";
+                            arrowElement.style.borderRight = "5px solid transparent";
+                            arrowElement.style.borderBottom = "5px solid white";
+                            arrowElement.style.position = "absolute";
+                            arrowElement.style.marginLeft = ((responseDto.elementRect.width - 21)/ 2 ) + "px";
+                            arrowElement.style.top = ((responseDto.elementRect.height - 25) / 2) + "px";
+                            break;
+
+                        case "bottom":
+                            arrowElement.style.width = "0px";
+                            arrowElement.style.height = "0px";
+                            arrowElement.style.borderLeft = "5px solid transparent";
+                            arrowElement.style.borderRight = "5px solid transparent";
+                            arrowElement.style.borderTop = "5px solid white";
+                            arrowElement.style.position = "absolute";
+                            arrowElement.style.marginLeft = (responseDto.elementRect.width - 21) + "px";
+                            arrowElement.style.top = ((responseDto.elementRect.height - 25) / 2) + "px";
+                            break;
+
+                        case "left":
+                            arrowElement.style.width = "0px";
+                            arrowElement.style.height = "0px";
+                            arrowElement.style.borderTop = "5px solid transparent";
+                            arrowElement.style.borderBottom = "5px solid transparent";
+                            arrowElement.style.borderLeft = "5px solid white";
+                            arrowElement.style.position = "absolute";
+                            arrowElement.style.marginLeft = (responseDto.elementRect.width - 21 ) + "px";
+                            arrowElement.style.top = ((responseDto.elementRect.height - 25) / 2) + "px";
+
+                            break;
+
+                        case "right":
+                            arrowElement.style.width = "0px";
+                            arrowElement.style.height = "0px";
+                            arrowElement.style.borderTop = "5px solid transparent";
+                            arrowElement.style.borderBottom = "5px solid transparent";
+                            arrowElement.style.borderRight = "5px solid white";
+                            arrowElement.style.position = "absolute";
+                            arrowElement.style.marginLeft = "-4px";
+                            arrowElement.style.top = ((responseDto.elementRect.height - 25) / 2) + "px";
+                            break;
+                                
+                    default:
+                    }
+
+
                     document.body.appendChild(this.popUpElement);
+
                     this.$timeout(() => {
                         this.popUpElement.style.opacity = "100";
 
@@ -83,6 +140,7 @@
         }
         private initialize = (popUpOptions: IPopUpOptions) => {
             this.alignment = popUpOptions.alignment || "center";
+            this.displayArrow = popUpOptions.displayArrow;
             this.margin = popUpOptions.margin || "5px";
             this.triggerElement = popUpOptions.element;
             this.triggerScope = popUpOptions.triggerScope;
@@ -126,6 +184,7 @@
             popUpElement.id = "pop-up";
 
             var arrowElement = document.createElement("div");
+            arrowElement.setAttribute("class", "arrow");
             popUpElement.appendChild(arrowElement);
 
             var innerElement = document.createElement("div");
@@ -205,13 +264,17 @@
 
             return deferred.promise;
         }
-        private stylePopUp = (popUpElement: HTMLElement) => {
+        private stylePopUp = (popUpElement: HTMLElement, displayArrow:boolean) => {
             popUpElement.setAttribute("class", "pop-up");
             popUpElement.setAttribute("style", "-webkit-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;-o-transition: opacity " + this.transitionDurationInMilliseconds + "ms ease-in-out;transition: opacity " + this.transitionDurationInMilliseconds +"ms ease-in-out;");
             popUpElement.style.opacity = "0";
-            popUpElement.style.backgroundColor = "white";
             popUpElement.style.position = "absolute";
             popUpElement.style.display = "block";
+
+            if (displayArrow) {
+                popUpElement.style.border = "10px solid transparent";
+            }
+
             var innerElement: HTMLElement = <HTMLElement>popUpElement.querySelector(".inner");
             innerElement.setAttribute("style", "-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-radius:5px;");
             innerElement.style.backgroundColor = "white";
@@ -240,6 +303,10 @@
 
         private margin: string;
 
+        private displayArrow: boolean;
+
+        private position: string;
+
     }
 
     angular.module("app.ui").service("popUp", [
@@ -249,6 +316,7 @@
         "$timeout",
         "clientRectEquals",
         "getBoundingRectForDetachedElement",
+        "getSurroundingWindowSpace",
         "positionDetachedElement",
         PopUp]);
 }

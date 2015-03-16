@@ -1,6 +1,6 @@
 ﻿module app.ui {
 
-    angular.module("app.ui").value("positionDetachedElement",(triggerElement: HTMLElement, element: HTMLElement, directionPriorityList: string[], elementRect: ClientRect, alignment: string): IPositionDetachedElement => {
+    angular.module("app.ui").value("positionDetachedElement",(triggerElement: HTMLElement, element: HTMLElement, directionPriorityList: string[], elementRect: ClientRect, alignment: string, elementSurroundingWindowSpaceRect: IRect): IPositionDetachedElementResponseDto => {
 
         var triggerElementRect: ClientRect = triggerElement.getBoundingClientRect();
 
@@ -25,7 +25,10 @@
                         if (triggerElementRect.width > elementRect.width || lastOption) {
                             element.style.top = (triggerElementRect.top - elementRect.height) + "px";
                             element.style.left = triggerElementHorizontalMiddle - (elementRect.width / 2) + "px";
-                            return;
+                            return {
+                                position: directionPriorityList[i],
+                                elementRect: elementRect
+                            };
 
                         } else {
                             var diff = (elementRect.width - triggerElementRect.width) / 2;
@@ -33,7 +36,10 @@
                             if (((triggerElementRect.right + diff) < window.innerWidth) && triggerElementRect.left > diff) {
                                 element.style.top = (triggerElementRect.top - elementRect.height) + "px";
                                 element.style.left = triggerElementHorizontalMiddle - (elementRect.width / 2) + "px";
-                                return;
+                                return {
+                                    position: directionPriorityList[i],
+                                    elementRect: elementRect
+                                };
                             }
                         }
 
@@ -48,14 +54,20 @@
                         if (triggerElementRect.height > elementRect.height || lastOption) {
                             element.style.left = (triggerElementRect.left - elementRect.width) + "px";
                             element.style.top = triggerElementVerticalMiddle - (elementRect.height / 2) + "px";
-                            return;
+                            return {
+                                position: directionPriorityList[i],
+                                elementRect: elementRect
+                            };
                         } else {
                             var diff = (elementRect.height - triggerElementRect.height) / 2;
 
                             if (((triggerElementRect.bottom + diff) < window.innerHeight) && triggerElementRect.top > diff) {
                                 element.style.left = (triggerElementRect.left - elementRect.width) + "px";
                                 element.style.top = triggerElementVerticalMiddle - (elementRect.height / 2) + "px";
-                                return;
+                                return {
+                                    position: directionPriorityList[i],
+                                    elementRect: elementRect
+                                };
                             }
                         }
                     }
@@ -70,7 +82,10 @@
                         if (triggerElementRect.width > elementRect.width || lastOption) {
                             element.style.top = triggerElementRect.bottom + "px";
                             element.style.left = triggerElementHorizontalMiddle - (elementRect.width / 2) + "px";
-                            return;
+                            return {
+                                position: directionPriorityList[i],
+                                elementRect: elementRect
+                            };
 
                         } else {
 
@@ -79,7 +94,10 @@
                             if (((triggerElementRect.right + diff) < window.innerWidth) && triggerElementRect.left > diff) {
                                 element.style.top = triggerElementRect.bottom + "px";
                                 element.style.left = triggerElementHorizontalMiddle - (elementRect.width / 2) + "px";
-                                return;
+                                return {
+                                    position: directionPriorityList[i],
+                                    elementRect: elementRect
+                                };
                             }
                         }
                     }
@@ -94,7 +112,10 @@
                         if (triggerElementRect.height > elementRect.height || lastOption) {
                             element.style.left = triggerElementRect.right + "px";
                             element.style.top = triggerElementVerticalMiddle - (elementRect.height / 2) + "px";
-                            return;
+                            return {
+                                position: directionPriorityList[i],
+                                elementRect: elementRect
+                            };
                         } else {
 
                             var diff = (elementRect.height - triggerElementRect.height) / 2;
@@ -102,7 +123,10 @@
                             if (((triggerElementRect.bottom + diff) < window.innerHeight) && triggerElementRect.top > diff) {
                                 element.style.left = triggerElementRect.right + "px";
                                 element.style.top = triggerElementVerticalMiddle - (elementRect.height / 2) + "px";
-                                return;
+                                return {
+                                    position: directionPriorityList[i],
+                                    elementRect: elementRect
+                                };
                             }
                         }
                     }
@@ -126,7 +150,10 @@
 
                         element.style.bottom = triggerElementRect.top + "px";
 
-                        return;
+                        return {
+                            position: directionPriorityList[i],
+                            elementRect: elementRect
+                        };
                     }
                 }
 
@@ -135,7 +162,10 @@
 
                         element.style.top = triggerElementRect.bottom + "px";
 
-                        return;
+                        return {
+                            position: directionPriorityList[i],
+                            elementRect: elementRect
+                        };
                     }
                 }
 

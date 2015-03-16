@@ -3,12 +3,15 @@ app\book\book.routes.ts
 app\book\components\bookPopUp\bookPopUp.controller.ts
 app\shared\IClientRectEquals.d.ts
 app\shared\IGetBoundingRectForDetachedElement.d.ts
+app\shared\IGetSurroundingWindowSpace.d.ts
+app\shared\IIPositionDetachedElementResponseDto.d.ts
 app\shared\INavigationLink.d.ts
 app\shared\IPopUp.d.ts
 app\shared\IPopUpOptions.d.ts
 app\shared\IPopUpScope.d.ts
 app\shared\IPopUpTrigger.d.ts
 app\shared\IPositionDetachedElement.d.ts
+app\shared\IRect.d.ts
 app\ui\ui.module.ts
 app\ui\components\autoComplete\autoComplete.ts
 app\ui\components\carousel\carousel.ts
@@ -18,6 +21,7 @@ app\ui\components\entityAdminMenu\entityAdminMenu.ts
 app\ui\components\flyOut\flyOut.ts
 app\ui\components\gallery\gallery.ts
 app\ui\components\gallery\galleryItem.ts
+app\ui\components\hamburgerButton\hamburgerButton.ts
 app\ui\components\identityHeader\identityHeader.ts
 app\ui\components\list\list.ts
 app\ui\components\list\listItem.ts
@@ -31,4 +35,5 @@ app\ui\functions\bind.ts
 app\ui\functions\clientRectEquals.ts
 app\ui\functions\fire.ts
 app\ui\functions\getBoundingRectForDetachedElement.ts
+app\ui\functions\getSurroundingWindowSpace.ts
 app\ui\functions\positionDetachedElement.ts

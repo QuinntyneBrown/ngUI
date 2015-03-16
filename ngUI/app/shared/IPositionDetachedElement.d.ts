@@ -6,7 +6,9 @@
         element: HTMLElement,
         directionPriorityList: string[],
         elementRect: ClientRect,
-        alignment: string): void;
+        alignment: string,
+        elementSurroundingWindowSpaceRect: IRect): IPositionDetachedElementResponseDto;
 
     }
+
 }

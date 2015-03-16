@@ -65,6 +65,13 @@
     <Content Include="app\ui\components\carousel\carouselItem.html" />
     <Content Include="app\ui\components\container\container.html" />
     <Content Include="app\ui\components\flyOut\flyOut.html" />
+    <Content Include="app\ui\components\hamburgerButton\hamburgerButton.css">
+      <DependentUpon>hamburgerButton.less</DependentUpon>
+    </Content>
+    <Content Include="app\ui\components\hamburgerButton\hamburgerButton.html" />
+    <Content Include="app\ui\components\hamburgerButton\hamburgerButton.min.css">
+      <DependentUpon>hamburgerButton.css</DependentUpon>
+    </Content>
     <Content Include="app\ui\components\identityHeader\identityHeader.html" />
     <Content Include="app\ui\components\modal\modal.html" />
     <Content Include="app\ui\components\popUp\popUpSpec.js">
@@ -81,6 +88,10 @@
     <Content Include="app\ui\components\container\container.less" />
     <Content Include="app\ui\components\flyOut\flyOut.less" />
     <Content Include="app\ui\components\modal\modal.less" />
+    <Content Include="app\ui\components\hamburgerButton\hamburgerButton.less" />
+    <Content Include="app\ui\components\hamburgerButton\hamburgerButton.css.map">
+      <DependentUpon>hamburgerButton.css</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -130,12 +141,15 @@
     <TypeScriptCompile Include="app\book\book.routes.ts" />
     <TypeScriptCompile Include="app\shared\IClientRectEquals.d.ts" />
     <TypeScriptCompile Include="app\shared\IGetBoundingRectForDetachedElement.d.ts" />
+    <TypeScriptCompile Include="app\shared\IGetSurroundingWindowSpace.d.ts" />
+    <TypeScriptCompile Include="app\shared\IIPositionDetachedElementResponseDto.d.ts" />
     <TypeScriptCompile Include="app\shared\INavigationLink.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUpScope.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUp.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUpTrigger.d.ts" />
     <TypeScriptCompile Include="app\shared\IPositionDetachedElement.d.ts" />
     <TypeScriptCompile Include="app\shared\IPopUpOptions.d.ts" />
+    <TypeScriptCompile Include="app\shared\IRect.d.ts" />
     <TypeScriptCompile Include="app\ui\components\autoComplete\autoComplete.ts" />
     <TypeScriptCompile Include="app\ui\components\carousel\carousel.ts" />
     <TypeScriptCompile Include="app\ui\components\carousel\carouselItem.ts" />
@@ -144,6 +158,7 @@
     <TypeScriptCompile Include="app\ui\components\flyOut\flyOut.ts" />
     <TypeScriptCompile Include="app\ui\components\gallery\gallery.ts" />
     <TypeScriptCompile Include="app\ui\components\gallery\galleryItem.ts" />
+    <TypeScriptCompile Include="app\ui\components\hamburgerButton\hamburgerButton.ts" />
     <TypeScriptCompile Include="app\ui\components\identityHeader\identityHeader.ts" />
     <TypeScriptCompile Include="app\ui\components\list\list.ts" />
     <TypeScriptCompile Include="app\ui\components\list\listItem.ts" />
@@ -156,6 +171,7 @@
     <TypeScriptCompile Include="app\ui\functions\clientRectEquals.ts" />
     <TypeScriptCompile Include="app\ui\functions\fire.ts" />
     <TypeScriptCompile Include="app\ui\functions\getBoundingRectForDetachedElement.ts" />
+    <TypeScriptCompile Include="app\ui\functions\getSurroundingWindowSpace.ts" />
     <TypeScriptCompile Include="app\ui\functions\positionDetachedElement.ts" />
     <TypeScriptCompile Include="app\ui\ui.module.ts" />
     <TypeScriptCompile Include="scripts\typings\angularjs\angular-animate.d.ts" />

@@ -22,7 +22,8 @@ module app.ui {
             viewBag: "=",
             visibilityDurationInMilliseconds: "=",
             alignment: "@",
-            margin:"@"            
+            margin: "@",     
+            displayArrow: "="       
         };
 
         public link: (scope: IPopUpTriggerScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) => void;
@@ -46,7 +47,8 @@ module app.ui {
                 visibilityDurationInMilliseconds: scope.visibilityDurationInMilliseconds,
                 viewBag: scope.viewBag,
                 alignment: scope.alignment,
-                margin: scope.margin
+                margin: scope.margin,
+                displayArrow: scope.displayArrow
             });
         }
     }

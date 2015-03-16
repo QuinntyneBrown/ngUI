@@ -30,8 +30,8 @@ module app.ui {
 
         public scope: any = {
             navigationLinks: "=",
-            isAuthenticated: "=",
-            getUsername: "="
+            isAuthenticated: "&",
+            getUsername: "&"
         };
 
         public templateUrl: string = "/app/ui/components/identityHeader/identityHeader.html";
